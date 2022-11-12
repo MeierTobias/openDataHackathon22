@@ -1,8 +1,5 @@
 import pandas as pd
 
-
-
-
 def from_csv_with_coordinates(filename): #, **kwargs
 
 	#with open(filename, 'r') as f:
@@ -60,15 +57,16 @@ def from_csv_glas(filename): #, **kwargs
 		df["white"] = [1 if "Weiss" in ele else 0 for ele in data["Tags"]]
 		df['value'] = 1
 		
-		df.drop_duplicates()
-		print(df)
+		df.drop_duplicates('name')
+		#print(df)
 		
 		#gk = df.groupby('id')
-		gk = data.groupby('Device ID')
+		#gk = data.groupby('Device ID')
+		gk = data.groupby('Sensorname')
 		stationen = gk.groups.keys()
-		print(stationen)
+		#print(stationen)
 		print(len(stationen), ' stationen')
-		
+		mengen = {}
 		for group_name, gk_group in gk:
 			d = pd.DataFrame()
 			device_id = group_name
@@ -82,7 +80,7 @@ def from_csv_glas(filename): #, **kwargs
 			d.reset_index(drop=True)
 			
 			menge = -sum([a for a in d['d'].to_list() if a<0])
-
+			mengen.update({group_name:menge})
 			print(group_name, menge)
 			
 			#d['f'] = gk_group['Füllstandsdistanz']
@@ -94,6 +92,9 @@ def from_csv_glas(filename): #, **kwargs
 	else:
 		raise ValueError('no Location found in dataset')
 		
+	
+	df['menge'] = df['name'].map(mengen)
+	df.to_csv('glassammelstellen.tsv', sep='\t')
 	
 	print(df)
 	
