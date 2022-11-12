@@ -16,11 +16,11 @@ def from_csv_with_coordinates(filename): #, **kwargs
 		
 		#df['loc'] = data['Location']
 		df = pd.DataFrame()
-		df[['lon', 'lat']] = data['Location'].str.split(',', 1, expand=True)
+		df[['lat', 'lon']] = data['Location'].str.split(',', 1, expand=True)
 		df['value'] = 1
 	elif 'Geo Point' in header:
 		df = pd.DataFrame()
-		df[['lon', 'lat']] = data['Geo Point'].str.split(',', 1, expand=True)
+		df[['lat', 'lon']] = data['Geo Point'].str.split(',', 1, expand=True)
 		df['value'] = 1
 		
 	else:
@@ -50,14 +50,14 @@ def from_csv_glas(filename): #, **kwargs
 		
 		#df['loc'] = data['Location']
 		df = pd.DataFrame()
-		df[['lon', 'lat']] = data['geo_point_2d'].str.split(',', 1, expand=True)
+		df[['lat', 'lon']] = data['geo_point_2d'].str.split(',', 1, expand=True)
 		df['name'] = data['Sensorname'] 
 		df["braun"] = [1 if "Braun" in ele else 0 for ele in data["Tags"]]
 		df["green"] = [1 if "GrÃ¼n" in ele else 0 for ele in data["Tags"]]
 		df["white"] = [1 if "Weiss" in ele else 0 for ele in data["Tags"]]
-		df['value'] = 1
+		#df['value'] = 1
 		
-		df.drop_duplicates('name')
+		df = df.drop_duplicates('name')
 		#print(df)
 		
 		#gk = df.groupby('id')
@@ -94,7 +94,7 @@ def from_csv_glas(filename): #, **kwargs
 		
 	
 	df['menge'] = df['name'].map(mengen)
-	df.to_csv('glassammelstellen.tsv', sep='\t')
+	df.to_csv('glassammelstellen.tsv', sep=';', index=False)
 	
 	print(df)
 	
