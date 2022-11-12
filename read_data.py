@@ -51,7 +51,7 @@ def from_csv_glas(filename): #, **kwargs
 		#df['loc'] = data['Location']
 		df = pd.DataFrame()
 		df[['lat', 'lon']] = data['geo_point_2d'].str.split(',', 1, expand=True)
-		df['name'] = data['Sensorname'] 
+		df['sensorname'] = data['Sensorname'] 
 		df["braun"] = [1 if "Braun" in ele else 0 for ele in data["Tags"]]
 		df["green"] = [1 if "GrÃ¼n" in ele else 0 for ele in data["Tags"]]
 		df["white"] = [1 if "Weiss" in ele else 0 for ele in data["Tags"]]
